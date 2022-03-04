@@ -61,6 +61,11 @@
     max-width: 60%;
     padding: 3px 2px;
 }
+textarea {
+    border: 2px solid var(--border-gray);
+    padding: 0 5px;
+    margin-top: 5px;
+}
 
 /* Right container */
 #RC-right h3 {
@@ -71,6 +76,7 @@
     padding: 5px 15px;
 }
 #score-history-wrapper * {
+    color: var(--code-green);
     margin-bottom: 10px;
 }
 #most-recent, #second-most-recent {
@@ -81,4 +87,7 @@
     font-size: 1.3rem;
     text-shadow: 1px 1px 1px black;
     cursor: pointer;
+}
+#clear-history:hover {
+    text-shadow: 0 0 5px black;
 }
