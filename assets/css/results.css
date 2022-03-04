@@ -1,0 +1,84 @@
+/* Results Screen */
+
+/* main container */
+#results-container {
+    /* display transition none to grid */
+    display: none;
+    grid-template-rows: 1fr 3fr;
+    height: 100vh;
+    background: var(--blue-page-gradient);
+    text-shadow: 1px 1px 1px black;
+}
+#results-container #results-header, #results-container #results-containers {
+    justify-self: center;
+}
+/* Individual containers sections */
+#results-container #results-header {
+    align-self: end;
+    background: var(--blue-page-gradient);
+    border: 1px solid var(--border-gray);
+    padding: 2rem 6rem;
+    cursor: pointer;
+    box-shadow: var(--box-shadow);
+}
+#results-container #results-containers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    padding: 50px;
+}
+#RC-left, #RC-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 450px;
+    padding: 20px;
+    font-size: 1.3rem;
+}
+.RC-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 500px;
+    padding: 40px 20px;
+    border: 1px solid var(--border-gray);
+    box-shadow: var(--box-shadow);
+    background: var(--blue-page-gradient);
+}
+#results-judge {
+    font-style: italic;
+}
+/* left container */
+#results-container #results-title {
+    font-style: italic;
+}
+#save-progress {
+    display: flex;
+    flex-direction: column;
+}
+#save-progress #initials {
+    max-width: 60%;
+    padding: 3px 2px;
+}
+
+/* Right container */
+#RC-right h3 {
+    align-self: center;
+}
+#score-history-wrapper {
+    background-color: black;
+    padding: 5px 15px;
+}
+#score-history-wrapper * {
+    margin-bottom: 10px;
+}
+#most-recent, #second-most-recent {
+    border-top: 1px solid var(--light-brown);
+    padding-top: 5px;
+}
+#clear-history {
+    font-size: 1.3rem;
+    text-shadow: 1px 1px 1px black;
+    cursor: pointer;
+}

@@ -1,0 +1,105 @@
+/* Multiple Choice Screen */
+#multiple-choice-container {
+    /* display transition none to flex */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: var(--gray-page-gradient);
+    text-shadow: 1px 1px 1px black;
+}
+.MC-inner-container {
+    border: 1px solid var();
+    background: var(--gray-page-gradient);
+    box-shadow: var(--box-shadow);
+    font-size: 1.2rem;
+    padding: 5px;
+    width: 500px;
+}
+#MC-box-container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+#MC-box * {
+    margin: 10px 0 0 0;
+}
+#MC-header {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-dark-gray);
+    animation: jingle 2s forwards;
+}
+#MC-header-tooltip {
+    display: flex;
+    justify-content: space-between;
+    font-style: italic;
+}
+#timer {
+    font-size: 1.5rem;
+    border: 1px solid var(--border-gray);
+    background: var(--gray-page-gradient);
+    padding: 5px 15px;
+    animation: tick 1s infinite alternate;
+}
+#time-left {
+    border-left: 1px solid var(--border-dark-gray);
+    padding-left: 10px;
+}
+#pass {
+    font-size: 1.2rem;
+    border: 1px solid var(--border-gray);
+    background: var(--gray-page-gradient);
+    cursor: pointer;
+}
+#pass:hover {
+    background: none;
+    background-color: var(--border-dark-gray);
+    color: var(--code-green);
+}
+#MC-header-tooltip, #pass {
+    padding: 10px 20px;
+}
+#MC-answers {
+    color: var(--code-green);
+    background-color: black;
+    padding: 10px 30px;
+}
+#MC-answers li {
+    margin: 10px 0;
+    padding: 5px;
+    border: 1px solid var(--border-gray);
+    cursor: pointer;
+}
+#MC-answers *:hover {
+    background-color: var(--dark-brown);
+    color: var(--light-brown);
+}
+
+@keyframes tick {
+    0% {
+        box-shadow: 0 0 0 none;
+    }
+    100% {
+        box-shadow: var(--box-shadow-alternate);
+    }
+}
+@keyframes jingle {
+    0% {
+        padding-right: 20px;
+    }
+    25% {
+        padding-left: 20px;
+    }
+    50% {
+        padding-right: 20px;
+    }
+    75% {
+        padding-right: 0px;
+        font-size: 1.5rem;
+    }
+    100% {
+        font-size: 1.2rem;
+    }
+}

@@ -1,0 +1,34 @@
+/* Introduction Screen */
+#intro-container {
+    /* display transition none to flex */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 10px;
+    height: 100vh;
+    background: var(--blue-page-gradient); 
+    color: var(--dark-brown);
+}
+#intro-container h1, #intro-container h2, #intro-container aside {
+    text-shadow: 1px 1px 1px black;
+}
+#intro-container #intro-prompt {
+    margin-top: 40px;
+    animation: bob 1s infinite alternate;
+    height: 20px;
+    cursor: pointer;
+}
+#intro-description {
+    font-style: italic;
+    font-size: 1.2rem;
+}
+
+@keyframes bob {
+    0% {
+        font-size: 1.5rem;
+    }
+    100% {
+        font-size: 1.7rem;
+    }
+}

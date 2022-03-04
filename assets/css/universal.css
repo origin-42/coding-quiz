@@ -1,0 +1,40 @@
+/* Root and Variables */
+:root {
+    /* colors */
+    --blue-page-gradient: linear-gradient(#046e79, #0298a8, #00d0e7);
+    --gray-page-gradient: linear-gradient(#767676, #3c3c3c);
+    --code-green: #009f00;
+    --light-brown: #efac47;
+    --dark-brown: #91692e;
+    --border-gray: #595959;
+    --border-dark-gray: #363535;
+   
+    /* shadows */
+    --box-shadow: 0 0 3px 1px black;
+    --box-shadow-alternate: 0 0 5px 3px black;
+
+    font-size: 16px;
+
+}
+
+.x1-5 {
+    font-size: 1.5rem;
+}
+.x2 {
+    font-size: 2rem;
+}
+.x2-5 {
+    font-size: 2.5rem;
+}
+.x3 {
+    font-size: 3rem;
+}
+
+.timeout {
+    color: var(--dark-brown);
+}
+h1, h2, h3, h4, h5, time, button, label {
+    color: var(--light-brown);
+}
+
+

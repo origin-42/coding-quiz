@@ -4,14 +4,98 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/reset.css">
+    <link rel="stylesheet" href="./assets/css/universal.css">
     <link rel="stylesheet" href="./assets/css/style.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="./assets/css/multichoice.css">
+    <link rel="stylesheet" href="./assets/css/results.css">
+    
+    <title>QuizTimeout</title>
 </head>
 <body>
     <main>
+        <!-- Introduction Screen -->
+        <section id="intro-container">
+            <h1 id="intro-header" class="x2">Welcome to Quiz<span class="timeout">Timeout</span></h1>
+            <h2 id="intro-description" class="x2">A timed, interactive, multiple choice javascript quiz</h2>
+            <aside id="intro-prompt" class="x1-5">Press here to begin…</aside>
+        </section>
 
-        
+        <!-- Multiple Choice Screen -->
+        <section id="multiple-choice-container">
+            <article class="MC-inner-container">
+                <section id="MC-header">
+                    <h3 class="MC-question">Question: Select all h3 tags</h3>
+                </section>
+                <section id="MC-box-container">
+                    <article id="MC-box">
+                        <section id="MC-header-tooltip">
+                            <h4>Select an answer or pass</h4>
+                            <h5 id="timer">Countdown: <span id="time-left">5</span></h5>
+                        </section>
+                        <ol id="MC-answers">
+                            <li class="answer"><code>querySelector("h3");</code></li>
+                            <li class="answer"><code>document.getElementById("h3");</code></li>
+                            <li class="answer"><code>document.querySelectorAll("h3");</code></li>
+                            <li class="answer"><code>element.getElementById("h3-tag");</code></li>
+                        </ol>
+                    </article>
+                    <button id="pass">Pass</button>
+                </section>
+            </article>
+        </section>
 
+        <!-- Results Section -->
+        <section id="results-container">
+            <h2 id="results-header">Begin<span id="results-title"> Quiz<span class="timeout">Time</span></span></h2>
+            <section id="results-containers">
+                <!-- Left Subsection -->
+                <article id="RC-left">
+                    <section class="RC-container">
+                        <h3 id="results-judge">Maybe some extra practise</h3>
+                        <section id="answers-outcome">
+                            <h4>You guessed <span id="AO-current-correct">1</span> answers correctly</h4>
+                            <h4>You guessed <span id="AO-current-incorrect">4</span> answers incorrectly</h4>
+                        </section>
+                        <section id="save-progress">
+                            <label for="initials" id="initials-label">Save your progress</label>
+                            <textarea name="initials" id="initials" cols="10" rows="1" placeholder="J.K .."></textarea>
+                        </section>
+                    </section>
+                </article>
+                <!-- Right Subsection -->
+                <article id="RC-right">
+                    <section class="RC-container">
+                        <h3>Score History</h3>
+                        <section id="score-history-container">
+                            <article id="score-history">
+                                <ul id="score-history-wrapper">
+                                    <li class="SH-item" id="first-highest">
+                                        <h4>Highest Score</h4>
+                                        <time datetime="">04/03/2022: 7:45PM</time>
+                                        <h5>Correct: 4</h5>
+                                        <h5>Incorrect: 5</h5>
+                                    </li>
+                                    <li class="SH-item" id="most-recent">
+                                        <h4>Highest Score</h4>
+                                        <time datetime="">04/03/2022: 8:45PM</time>
+                                        <h5>Correct: 1</h5>
+                                        <h5>Incorrect: 4</h5>
+                                    </li>
+                                    <li class="SH-item" id="second-most-recent">
+                                        <h4>Highest Score</h4>
+                                        <time datetime="">04/03/2022: 8:35PM</time>
+                                        <h5>Correct: 3</h5>
+                                        <h5>Incorrect: 2</h5>
+                                    </li>
+                                </ul>
+                            </article>
+                        </section>
+                        <button id="clear-history">Clear History</button>
+                    </section>
+                </article>
+            </section>
+        </section>
     </main>
     
     <script src="./assets/javascript/script.js"></script>
