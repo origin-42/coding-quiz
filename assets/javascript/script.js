@@ -67,20 +67,27 @@ const startTimer = (availableTime) => {
     let questionsSet = createRandomQuestions(); // Prints an array of random questions - 1 when popped.
     let setQuestion = questionsSet.pop(); // Prints an array of one question from questionsSet.
 
+    let questionsCorrect = 0;
+    let questionsIncorrect = 0;
+
     const addNewQuestion = () => {
         setQuestion = questionsSet.pop(); 
     } // Reduces questionSet by 1 and changes setQuestion if called.
     setQAndA(setQuestion); // Populates the field with the current question during this interval
     
     const timeInterStarter = () => {
-        addNewQuestion();
-        setQAndA(setQuestion);
+        addNewQuestion(); // Change the question, reduce remaining questions
+        setQAndA(setQuestion); // Add the next question to the screen
 
-        let timeInterval = setInterval(function () {
+        let timeInterval = setInterval(function () { // Creat an interval that runs every second
 
             answers.addEventListener("click", function (event) {
+                console.log(event.target.closest('li').querySelector('code').getAttribute('data-true'));
                 if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
                     clearInterval(timeInterval);
+                    questionsCorrect++;
+                    console.log(questionsCorrect)
+                    timer.innerHTML = "Correct!";
                 }
             });
 
@@ -95,7 +102,7 @@ const startTimer = (availableTime) => {
                         timeToGuess = 13;
                         timeInterStarter();
                     }
-                }, 1000);
+                }, 2000);
             } else {
                 timer.innerHTML = timeToGuess; // Set inner HTML to time reamining
                 timeToGuess--; // Naturally reduce time remaining by 1
@@ -103,6 +110,7 @@ const startTimer = (availableTime) => {
         }, 1000); 
     }
     timeInterStarter();
+
 }
 
 const setQAndA = (questions) => {
