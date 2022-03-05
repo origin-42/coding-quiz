@@ -79,7 +79,9 @@ const startTimer = (availableTime) => {
         let timeInterval = setInterval(function () {
 
             answers.addEventListener("click", function (event) {
-                console.log(event.target);
+                if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
+                    clearInterval(timeInterval);
+                }
             });
 
             if (timeToGuess <= 0) {
