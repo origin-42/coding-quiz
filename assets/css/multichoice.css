@@ -14,7 +14,7 @@
     box-shadow: var(--box-shadow);
     font-size: 1.2rem;
     padding: 5px;
-    width: 500px;
+    width: 600px;
 }
 #MC-box-container {
     display: flex;
@@ -75,6 +75,9 @@
 #MC-answers *:hover {
     background-color: var(--dark-brown);
     color: var(--light-brown);
+}
+.answer {
+    width: 100%;
 }
 
 @keyframes tick {
