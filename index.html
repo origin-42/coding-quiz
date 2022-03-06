@@ -25,13 +25,13 @@
         <section id="multiple-choice-container">
             <article class="MC-inner-container">
                 <section id="MC-header">
-                    <h3 class="MC-question"></h3>
+                    <button class="MC-question">Click here to start</button>
                 </section>
                 <section id="MC-box-container">
                     <article id="MC-box">
                         <section id="MC-header-tooltip">
-                            <h4>Select an answer or pass</h4>
-                            <h5 id="timer">Countdown: <span id="time-left">13</span></h5>
+                            <h4 id="wait-prompts">Select an answer or pass</h4>
+                            <h5 id="timer">Countdown: <span id="time-left"></span></h5>
                         </section>
                         <ol id="MC-answers">
                             <li><code class="answer">querySelector("h3");</code></li>
@@ -54,8 +54,8 @@
                     <section class="RC-container">
                         <h3 id="results-judge">Maybe some extra practise</h3>
                         <section id="answers-outcome">
-                            <h4>You guessed <span id="AO-current-correct">1</span> answers correctly</h4>
-                            <h4>You guessed <span id="AO-current-incorrect">4</span> answers incorrectly</h4>
+                            <h4>You guessed <span id="AO-current-correct"></span> answers correctly</h4>
+                            <h4>You guessed <span id="AO-current-incorrect"></span> answers incorrectly</h4>
                         </section>
                         <section id="save-progress">
                             <label for="initials" id="initials-label">Save your progress</label>

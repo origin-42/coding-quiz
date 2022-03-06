@@ -31,6 +31,13 @@
     border-bottom: 1px solid var(--border-dark-gray);
     animation: jingle 2s forwards;
 }
+.MC-question {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.MC-question:hover {
+    font-size: 1.7rem;
+}
 #MC-header-tooltip {
     display: flex;
     justify-content: space-between;

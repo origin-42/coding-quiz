@@ -1,17 +1,5 @@
-// Activated by clicking on the intro screen. Also begins game.
-const removeIntro = () => {
-    introScreen.style.display = "none";
-    multiChoice.style.display = "flex";
 
-    startTimer(13);
-}
-// Activated by clicking "Begin QuizTime". Begins game.
-const startGame = () => {
-    multiChoice.style.display = "flex";
-    resultsScreen.style.display = "none";
 
-    startTimer(13);
-}
 
 // Questions and Answers
 const qAndA = [
@@ -52,6 +40,28 @@ const qAndA = [
     }
 ];
 
+
+let questionsCorrect = 0;
+let questionsIncorrect = 0;
+let timeToGuess = 15; 
+let clickTimeout = 0;
+
+const moveToGame = () => {
+    multiChoice.style.display = "flex";
+    resultsScreen.style.display = "none";
+    introScreen.style.display = "none";
+}
+
+// Activated by clicking "Begin QuizTime". Begins game.
+const startGame = () => {
+    startTimer();
+    question.disabled = true;
+    timer.innerHTML = "";
+
+    questionsCorrect = 0;
+    questionsIncorrect = 0;
+}
+
 // Create a randomised array from qAndA
 const createRandomQuestions = () => {
     let randomisedArray = qAndA
@@ -62,13 +72,19 @@ const createRandomQuestions = () => {
     return randomisedArray;
 };
 
-const startTimer = (availableTime) => {
-    let timeToGuess = availableTime; // prints 12
+const endGame = () => {
+    multiChoice.style.display = "none";
+    resultsScreen.style.display = "grid";
+    introScreen.style.display = "none";
+
+    question.disabled = false;
+    question.innerHTML = "Click here to start";
+}
+
+const startTimer = () => {
+    
     let questionsSet = createRandomQuestions(); // Prints an array of random questions - 1 when popped.
     let setQuestion = questionsSet.pop(); // Prints an array of one question from questionsSet.
-
-    let questionsCorrect = 0;
-    let questionsIncorrect = 0;
 
     const addNewQuestion = () => {
         setQuestion = questionsSet.pop(); 
@@ -81,26 +97,26 @@ const startTimer = (availableTime) => {
 
         let timeInterval = setInterval(function () { // Creat an interval that runs every second
 
-            answers.addEventListener("click", function (event) {
-                console.log(event.target.closest('li').querySelector('code').getAttribute('data-true'));
-                if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
-                    clearInterval(timeInterval);
-                    questionsCorrect++;
-                    console.log(questionsCorrect)
-                    timer.innerHTML = "Correct!";
-                }
-            });
 
             if (timeToGuess <= 0) {
+
+                questionsIncorrect++;
+                
                 clearInterval(timeInterval);
                 timer.innerHTML = "Times Up!";
                 // cycles the menu, adds the score, etc.
                 setTimeout(function () {
                     if (questionsSet.length === 0) {
-                        gameFinished(); // Tally results
+                        timer.innerHTML = "Round over!";
+                        setTimeout(function () {
+                            endGame();
+                        }, 2000)
                     } else if (questionsSet.length > 0) {
-                        timeToGuess = 13;
-                        timeInterStarter();
+                        timer.innerHTML = "Go!";
+                        setTimeout(function () {
+                            timeToGuess = 15;
+                            timeInterStarter();
+                        }, 1000);
                     }
                 }, 2000);
             } else {
@@ -110,6 +126,7 @@ const startTimer = (availableTime) => {
         }, 1000); 
     }
     timeInterStarter();
+
 
 }
 
@@ -167,6 +184,7 @@ let multiChoice = document.querySelector("#multiple-choice-container");
 let resultsScreen = document.querySelector("#results-container");
 let questionNumber = document.querySelector("#questionNumber");
 let question = document.querySelector(".MC-question");
+let wait = document.querySelector("#wait-prompts");
 let timer = document.querySelector("#time-left");
 let answers = document.querySelector("#MC-answers");
 let userGuess = document.querySelectorAll(".answer");
@@ -180,18 +198,53 @@ let initialsSaved = document.getElementById("#initials");
 let scoreHistory = document.querySelector("#score-history-wrapper");
 // Score History has four items that are added.
 let highestScore = document.querySelector("#first-highest");
-let mostRecentScore = document.querySelector("#most-recent");
-let secontMostRecentScore = document.querySelector("#second-most-recent");
+let mostRecentScore = document.querySelector("#second-highest");
+let secontMostRecentScore = document.querySelector("#third-highest");
 // There's a datetimeattribute that can be set to the time of submission as well when the time is submitted.
 let clearHistory = document.querySelector("#clear-history")
 
 // Event Listeners
-introScreen.addEventListener("click", removeIntro);
-beginGameButton.addEventListener("click", startGame);
-
-// temp listers
-pass.addEventListener ("click", function () {
-    multiChoice.style.display = "none";
-    resultsScreen.style.display = "grid";
+introScreen.addEventListener("click", moveToGame);
+beginGameButton.addEventListener("click", moveToGame);
+question.addEventListener("click", startGame);
+pass.addEventListener("click", function () {
+    if (clickTimeout === 0) {
+        clickTimeout = 2;
+        timeToGuess = 0;
+        setTimeout(function () {
+            clickTimeout = 0;
+        }, 2000)
+    } else {
+        wait.innerHTML = "Please pace your clicks.";
+        setTimeout(function () {
+            wait.innerHTML = "Select an answer or pass";
+        }, 2000);
+    }
 })
 
+answers.addEventListener("click", function (event) {
+    
+    if (clickTimeout === 0) {
+        
+        clickTimeout = 2;
+        setTimeout(function () {
+            clickTimeout = 0;
+        }, 2000);
+
+        if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
+            // Current not running..
+            questionsCorrect++;
+            timer.innerHTML = "Correct!";
+            timeToGuess = 60;
+    
+        } else if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "false") {
+            timer.innerHTML = "Incorrect!";
+            timeToGuess-=2;
+        }
+    } else {
+        wait.innerHTML = "Please pace your clicks.";
+        setTimeout(function () {
+            wait.innerHTML = "Select an answer or pass";
+        }, 2000);
+    }
+});
