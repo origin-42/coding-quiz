@@ -40,11 +40,27 @@ const qAndA = [
     }
 ];
 
+// Create a randomised array from qAndA
+const createRandomQuestions = () => {
+    let randomisedArray = qAndA
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+
+    return randomisedArray;
+};
+
 
 let questionsCorrect = 0;
 let questionsIncorrect = 0;
 let timeToGuess = 15; 
 let clickTimeout = 0;
+let correctGuess = false;
+let passed = false;
+
+let questionsSet = createRandomQuestions(); 
+let setQuestion = "";
+
 
 const moveToGame = () => {
     multiChoice.style.display = "flex";
@@ -56,63 +72,100 @@ const moveToGame = () => {
 const startGame = () => {
     startTimer();
     question.disabled = true;
-    timer.innerHTML = "";
+    countDownIndicator.innerHTML = "";
 
     questionsCorrect = 0;
     questionsIncorrect = 0;
 }
-
-// Create a randomised array from qAndA
-const createRandomQuestions = () => {
-    let randomisedArray = qAndA
-    .map(value => ({ value, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value);
-
-    return randomisedArray;
-};
 
 const endGame = () => {
     multiChoice.style.display = "none";
     resultsScreen.style.display = "grid";
     introScreen.style.display = "none";
 
+    correctAnswersTotal.innerHTML = questionsCorrect;
+    incorrectAnswersTotal.innerHTML = questionsIncorrect;
+
+    questionsSet = createRandomQuestions(); 
     question.disabled = false;
+    countDownIndicator.innerHTML = "Countdown: "; 
     question.innerHTML = "Click here to start";
 }
 
 const startTimer = () => {
     
-    let questionsSet = createRandomQuestions(); // Prints an array of random questions - 1 when popped.
-    let setQuestion = questionsSet.pop(); // Prints an array of one question from questionsSet.
+    
 
     const addNewQuestion = () => {
         setQuestion = questionsSet.pop(); 
-    } // Reduces questionSet by 1 and changes setQuestion if called.
-    setQAndA(setQuestion); // Populates the field with the current question during this interval
+    } 
+    setQAndA(setQuestion); 
     
     const timeInterStarter = () => {
-        addNewQuestion(); // Change the question, reduce remaining questions
-        setQAndA(setQuestion); // Add the next question to the screen
+        addNewQuestion();
+        setQAndA(setQuestion); 
 
-        let timeInterval = setInterval(function () { // Creat an interval that runs every second
+        let timeInterval = setInterval(function () { 
 
-
-            if (timeToGuess <= 0) {
-
-                questionsIncorrect++;
-                
+            
+            if (correctGuess === true) {
+                questionsCorrect++;
+                console.log(questionsCorrect)
+                correctGuess = false;
                 clearInterval(timeInterval);
-                timer.innerHTML = "Times Up!";
+                setTimeout(function () {
+                    if (questionsSet.length === 0) {
+                        countDownIndicator.innerHTML = "Round over!";
+                        setTimeout(function () {
+                            endGame();
+                        }, 2000);
+                    } else if (questionsSet.length > 0) {
+                        countDownIndicator.innerHTML = "Get Ready.";
+                        setTimeout(function () {
+                            timeToGuess = 15;
+                            countDownIndicator.innerHTML = "Go!";
+                            timeInterStarter();
+                        }, 1000);
+                    }
+                }, 2000);
+            } else if (passed === true) {
+                questionsIncorrect++;
+                console.log(questionsIncorrect)
+                clearInterval(timeInterval);
+                passed = false;
+
+                countDownIndicator.innerHTML = "You passed.";
+
                 // cycles the menu, adds the score, etc.
                 setTimeout(function () {
                     if (questionsSet.length === 0) {
-                        timer.innerHTML = "Round over!";
+                        countDownIndicator.innerHTML = "Round over!";
                         setTimeout(function () {
                             endGame();
                         }, 2000)
                     } else if (questionsSet.length > 0) {
-                        timer.innerHTML = "Go!";
+                        countDownIndicator.innerHTML = "Go!";
+                        setTimeout(function () {
+                            timeToGuess = 15;
+                            timeInterStarter();
+                        }, 1000);
+                    }
+                }, 2000);
+            } else if (timeToGuess <= 0) {
+                clearInterval(timeInterval);
+                console.log(questionsIncorrect)
+                questionsIncorrect++;
+
+                countDownIndicator.innerHTML = "Times Up!";
+                // cycles the menu, adds the score, etc.
+                setTimeout(function () {
+                    if (questionsSet.length === 0) {
+                        countDownIndicator.innerHTML = "Round over!";
+                        setTimeout(function () {
+                            endGame();
+                        }, 2000)
+                    } else if (questionsSet.length > 0) {
+                        countDownIndicator.innerHTML = "Go!";
                         setTimeout(function () {
                             timeToGuess = 15;
                             timeInterStarter();
@@ -186,14 +239,15 @@ let questionNumber = document.querySelector("#questionNumber");
 let question = document.querySelector(".MC-question");
 let wait = document.querySelector("#wait-prompts");
 let timer = document.querySelector("#time-left");
+let countDownIndicator = document.querySelector("#timer");
 let answers = document.querySelector("#MC-answers");
 let userGuess = document.querySelectorAll(".answer");
 // Answers Class = .answer - add to each list items code tag (querySelectorAll("code"));
 let pass = document.querySelector("#pass");
 let judgement = document.querySelector("#results-judge");
 let beginGameButton = document.querySelector("#results-header");
-let correctAnswersTotal = document.querySelector("AO-current-correct");
-let incorrectAnswersTotal = document.querySelector("AO-current-incorrect");
+let correctAnswersTotal = document.querySelector("#AO-current-correct");
+let incorrectAnswersTotal = document.querySelector("#AO-current-incorrect");
 let initialsSaved = document.getElementById("#initials");
 let scoreHistory = document.querySelector("#score-history-wrapper");
 // Score History has four items that are added.
@@ -210,7 +264,7 @@ question.addEventListener("click", startGame);
 pass.addEventListener("click", function () {
     if (clickTimeout === 0) {
         clickTimeout = 2;
-        timeToGuess = 0;
+        passed = true;
         setTimeout(function () {
             clickTimeout = 0;
         }, 2000)
@@ -233,12 +287,11 @@ answers.addEventListener("click", function (event) {
 
         if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
             // Current not running..
-            questionsCorrect++;
-            timer.innerHTML = "Correct!";
-            timeToGuess = 60;
+            countDownIndicator.innerHTML = "Correct!";
+            correctGuess = true;
     
         } else if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "false") {
-            timer.innerHTML = "Incorrect!";
+            countDownIndicator.innerHTML = "Incorrect!";
             timeToGuess-=2;
         }
     } else {
