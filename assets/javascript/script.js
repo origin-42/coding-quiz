@@ -1,5 +1,33 @@
-
-
+// HTML Selectors
+let introScreen = document.querySelector("#intro-container");
+let multiChoice = document.querySelector("#multiple-choice-container");
+let resultsScreen = document.querySelector("#results-container");
+let questionNumber = document.querySelector("#questionNumber");
+let question = document.querySelector(".MC-question");
+let wait = document.querySelector("#wait-prompts");
+let timer = document.querySelector("#time-left");
+let countDownIndicator = document.querySelector("#timer");
+let timerPrompt = document.querySelector("#timerprompt");
+let answers = document.querySelector("#MC-answers");
+let userGuess = document.querySelectorAll(".answer");
+// Answers Class = .answer - add to each list items code tag (querySelectorAll("code"));
+let pass = document.querySelector("#pass");
+let judgement = document.querySelector("#results-judge");
+let beginGameButton = document.querySelector("#results-header");
+let correctAnswersTotal = document.querySelector("#AO-current-correct");
+let incorrectAnswersTotal = document.querySelector("#AO-current-incorrect");
+let initialsSaved = document.querySelector("#initials");
+let enteredInitials = document.querySelector("#enteredInitials");
+let scoreHistory = document.querySelector("#score-history-wrapper");
+// Score History has four items that are added.
+let highestScore = document.querySelector("#highest-score");
+let nextHighestScore = document.querySelector("#second-highest");
+let currentScore = document.querySelector("#saved-current-score");
+let saveInitials = document.querySelector("#save-initials");
+let initialsValue = document.querySelector("#initialsValue");
+// There's a datetimeattribute that can be set to the time of submission as well when the time is submitted.
+let clearHistory = document.querySelector("#clear-history");
+console.log(highestScore.childNodes[1].textContent)
 
 // Questions and Answers
 const qAndA = [
@@ -50,9 +78,13 @@ const createRandomQuestions = () => {
     return randomisedArray;
 };
 
-
+let initialsEntered = "";
 let questionsCorrect = 0;
 let questionsIncorrect = 0;
+let highScore;
+let nextHighest;
+let newestSave;
+
 let timeToGuess = 15; 
 let clickTimeout = 0;
 let correctGuess = false;
@@ -61,18 +93,91 @@ let passed = false;
 let questionsSet = createRandomQuestions(); 
 let setQuestion = "";
 
+const saveScore = () => {
+    initialsEntered = enteredInitials.textContent;
+    initialsSaved.setAttribute("readonly", "");
+    saveInitials.disabled = true;
 
+    highScore = JSON.parse(localStorage.getItem("highScore"));
+    nextHighest = JSON.parse(localStorage.getItem("nextHighest"));
+    newestSave = { initials: initialsEntered, correct: questionsCorrect, incorrect: questionsIncorrect };
+    currentScore.childNodes[1].childNodes[1].innerHTML = newestSave.initials;
+    currentScore.childNodes[3].childNodes[1].innerHTML = newestSave.correct;
+    currentScore.childNodes[5].childNodes[1].innerHTML = newestSave.incorrect;
+
+
+    if (highScore == null) {
+        highScore = newestSave;
+        localStorage.setItem("highScore", JSON.stringify(highScore));
+        highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
+        highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
+        highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
+    } else if (highScore.correct < newestSave.correct) {
+        nextHighest = highScore;
+        localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
+        nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
+        nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
+        nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+
+        highScore = newestSave;
+        localStorage.setItem("highScore", JSON.stringify(highScore));
+        highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
+        highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
+        highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
+    } else if (nextHighest == null || nextHighest.correct < newestSave.correct) {
+        nextHighest = newestSave;
+        localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
+        nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
+        nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
+        nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+    } 
+
+    localStorage.setItem("newestSave", JSON.stringify(newestSave));
+}
+
+const updateInitials = (event) => {
+    enteredInitials.textContent = event.target.value;
+}
+
+const tallyResults = () => {
+    correctAnswersTotal.innerHTML = questionsCorrect;
+    incorrectAnswersTotal.innerHTML = questionsIncorrect;
+    
+
+
+    if (questionsCorrect < 3) {
+        judgement.innerHTML = "Try again (:";
+    } else if (questionsCorrect === 3) {
+        judgement.innerHTML = "Nice Attempt";
+    } else if (questionsCorrect === 4) {
+        judgement.innerHTML = "Well Done";
+    } else if (questionsCorrect === 5) {
+        judgement.innerHTML = "Perfect Score!";
+    }
+}
+
+console.log(answers.childNodes)
 const moveToGame = () => {
     multiChoice.style.display = "flex";
     resultsScreen.style.display = "none";
     introScreen.style.display = "none";
+
+    if (answers.childNodes[1].childNodes[0].textContent != undefined || answers.childNodes[1].childNodes[0].textContent != undefined  || answers.childNodes[1].childNodes[0].textContent != undefined  || answers.childNodes[1].childNodes[0].textContent != undefined ) {
+        answers.childNodes[1].childNodes[0].textContent = "";
+        answers.childNodes[3].childNodes[0].textContent = "";
+        answers.childNodes[5].childNodes[0].textContent = "";
+        answers.childNodes[7].childNodes[0].textContent = "";
+    }
+
+    saveInitials.disabled = false;
+    initialsSaved.removeAttribute("readonly", "");
 }
 
 // Activated by clicking "Begin QuizTime". Begins game.
 const startGame = () => {
     startTimer();
     question.disabled = true;
-    countDownIndicator.innerHTML = "";
+    timerPrompt.innerHTML = "Countdown: ";
 
     questionsCorrect = 0;
     questionsIncorrect = 0;
@@ -83,13 +188,19 @@ const endGame = () => {
     resultsScreen.style.display = "grid";
     introScreen.style.display = "none";
 
-    correctAnswersTotal.innerHTML = questionsCorrect;
-    incorrectAnswersTotal.innerHTML = questionsIncorrect;
+    tallyResults();
 
     questionsSet = createRandomQuestions(); 
     question.disabled = false;
-    countDownIndicator.innerHTML = "Countdown: "; 
+    timerPrompt.textContent = "Ready: "; 
+    timer.innerHTML = timeToGuess;
     question.innerHTML = "Click here to start";
+}
+
+const resetPrompt = () => {
+    setTimeout(function () {
+        timerPrompt.innerHTML = "Countdown: ";
+    }, 1000)
 }
 
 const startTimer = () => {
@@ -106,45 +217,47 @@ const startTimer = () => {
         setQAndA(setQuestion); 
 
         let timeInterval = setInterval(function () { 
-
+            
             
             if (correctGuess === true) {
                 questionsCorrect++;
-                console.log(questionsCorrect)
+                
                 correctGuess = false;
                 clearInterval(timeInterval);
                 setTimeout(function () {
                     if (questionsSet.length === 0) {
-                        countDownIndicator.innerHTML = "Round over!";
+                        timerPrompt.innerHTML = "Round over!";
                         setTimeout(function () {
                             endGame();
                         }, 2000);
                     } else if (questionsSet.length > 0) {
-                        countDownIndicator.innerHTML = "Get Ready.";
+                        timerPrompt.innerHTML = "Get Ready.";
                         setTimeout(function () {
                             timeToGuess = 15;
-                            countDownIndicator.innerHTML = "Go!";
+                            timerPrompt.innerHTML = "Go!";
+                            resetPrompt();
                             timeInterStarter();
                         }, 1000);
                     }
                 }, 2000);
             } else if (passed === true) {
                 questionsIncorrect++;
-                console.log(questionsIncorrect)
+                
                 clearInterval(timeInterval);
                 passed = false;
 
-                countDownIndicator.innerHTML = "You passed.";
+                timerPrompt.innerHTML = "You passed.";
 
                 // cycles the menu, adds the score, etc.
                 setTimeout(function () {
                     if (questionsSet.length === 0) {
-                        countDownIndicator.innerHTML = "Round over!";
+                        timerPrompt.innerHTML = "Round over!";
                         setTimeout(function () {
                             endGame();
                         }, 2000)
                     } else if (questionsSet.length > 0) {
-                        countDownIndicator.innerHTML = "Go!";
+                        timerPrompt.innerHTML = "Go!";
+                        resetPrompt();
                         setTimeout(function () {
                             timeToGuess = 15;
                             timeInterStarter();
@@ -153,19 +266,20 @@ const startTimer = () => {
                 }, 2000);
             } else if (timeToGuess <= 0) {
                 clearInterval(timeInterval);
-                console.log(questionsIncorrect)
+                
                 questionsIncorrect++;
-
-                countDownIndicator.innerHTML = "Times Up!";
+                
+                timerPrompt.innerHTML = "Times Up!";
                 // cycles the menu, adds the score, etc.
                 setTimeout(function () {
                     if (questionsSet.length === 0) {
-                        countDownIndicator.innerHTML = "Round over!";
+                        timerPrompt.innerHTML = "Round over!";
                         setTimeout(function () {
                             endGame();
                         }, 2000)
                     } else if (questionsSet.length > 0) {
-                        countDownIndicator.innerHTML = "Go!";
+                        timerPrompt.innerHTML = "Go!";
+                        resetPrompt();
                         setTimeout(function () {
                             timeToGuess = 15;
                             timeInterStarter();
@@ -230,33 +344,6 @@ const setQAndA = (questions) => {
     }
 }
 
-
-// HTML Selectors
-let introScreen = document.querySelector("#intro-container");
-let multiChoice = document.querySelector("#multiple-choice-container");
-let resultsScreen = document.querySelector("#results-container");
-let questionNumber = document.querySelector("#questionNumber");
-let question = document.querySelector(".MC-question");
-let wait = document.querySelector("#wait-prompts");
-let timer = document.querySelector("#time-left");
-let countDownIndicator = document.querySelector("#timer");
-let answers = document.querySelector("#MC-answers");
-let userGuess = document.querySelectorAll(".answer");
-// Answers Class = .answer - add to each list items code tag (querySelectorAll("code"));
-let pass = document.querySelector("#pass");
-let judgement = document.querySelector("#results-judge");
-let beginGameButton = document.querySelector("#results-header");
-let correctAnswersTotal = document.querySelector("#AO-current-correct");
-let incorrectAnswersTotal = document.querySelector("#AO-current-incorrect");
-let initialsSaved = document.getElementById("#initials");
-let scoreHistory = document.querySelector("#score-history-wrapper");
-// Score History has four items that are added.
-let highestScore = document.querySelector("#first-highest");
-let mostRecentScore = document.querySelector("#second-highest");
-let secontMostRecentScore = document.querySelector("#third-highest");
-// There's a datetimeattribute that can be set to the time of submission as well when the time is submitted.
-let clearHistory = document.querySelector("#clear-history")
-
 // Event Listeners
 introScreen.addEventListener("click", moveToGame);
 beginGameButton.addEventListener("click", moveToGame);
@@ -286,12 +373,20 @@ answers.addEventListener("click", function (event) {
         }, 2000);
 
         if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
-            // Current not running..
-            countDownIndicator.innerHTML = "Correct!";
+            event.target.setAttribute("data-background", "correctGreen");
+            setTimeout(function() {
+                event.target.setAttribute("data-background", "opac");
+            }, 2000);
+            timerPrompt.innerHTML = "Correct!";
             correctGuess = true;
     
         } else if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "false") {
-            countDownIndicator.innerHTML = "Incorrect!";
+            event.target.setAttribute("data-background", "inCorrectGreen");
+            setTimeout(function() {
+                event.target.setAttribute("data-background", "opac");
+            }, 2000);
+            timerPrompt.innerHTML = "Incorrect!";
+            resetPrompt();
             timeToGuess-=2;
         }
     } else {
@@ -301,3 +396,23 @@ answers.addEventListener("click", function (event) {
         }, 2000);
     }
 });
+
+clearHistory.addEventListener("click", function () {
+    localStorage.clear();
+
+    currentScore.childNodes[1].childNodes[1].innerHTML = "";
+    currentScore.childNodes[3].childNodes[1].innerHTML = "";
+    currentScore.childNodes[5].childNodes[1].innerHTML = "";
+
+    nextHighestScore.childNodes[1].childNodes[1].innerHTML = "";
+    nextHighestScore.childNodes[3].childNodes[1].innerHTML = "";
+    nextHighestScore.childNodes[5].childNodes[1].innerHTML = "";
+
+    highestScore.childNodes[1].childNodes[1].innerHTML = "";
+    highestScore.childNodes[3].childNodes[1].innerHTML = "";
+    highestScore.childNodes[5].childNodes[1].innerHTML = "";
+})
+
+initialsSaved.addEventListener("input", updateInitials);
+saveInitials.addEventListener("click", saveScore);
+

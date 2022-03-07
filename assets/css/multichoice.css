@@ -83,6 +83,13 @@
     background-color: var(--dark-brown);
     color: var(--light-brown);
 }
+[data-background="correctGreen"] {
+    background-color: green;
+}
+[data-background="inCorrectGreen"] {
+    background-color: red;
+}
+
 .answer {
     width: 100%;
 }

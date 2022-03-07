@@ -66,6 +66,11 @@ textarea {
     padding: 0 5px;
     margin-top: 5px;
 }
+#save-initials {
+    border: 1px solid var(--light-brown);
+    background-color: var(--dark-brown);
+    padding: 3px 5px;
+}
 
 /* Right container */
 #RC-right h3 {
