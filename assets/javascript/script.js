@@ -398,7 +398,9 @@ answers.addEventListener("click", function (event) {
 });
 
 clearHistory.addEventListener("click", function () {
-    localStorage.clear();
+    window.localStorage.removeItem('highScore');
+    window.localStorage.removeItem('nextHighest');
+    window.localStorage.removeItem('newestSave');
 
     currentScore.childNodes[1].childNodes[1].innerHTML = "";
     currentScore.childNodes[3].childNodes[1].innerHTML = "";
