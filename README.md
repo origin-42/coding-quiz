@@ -1,4 +1,4 @@
-# [![snippet](./assets/images/Title.psd)
+[![snippet](./assets/images/Title.psd)
 
 
 Here is a (very) short, interactive quiz designed to test your Javascript knowledge.
