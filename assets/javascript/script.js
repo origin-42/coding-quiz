@@ -1,30 +1,27 @@
 // HTML Selectors
+// Screen Selectors
 let introScreen = document.querySelector("#intro-container");
 let multiChoice = document.querySelector("#multiple-choice-container");
 let resultsScreen = document.querySelector("#results-container");
-let questionNumber = document.querySelector("#questionNumber");
+// Multichoice Section
 let question = document.querySelector(".MC-question");
 let wait = document.querySelector("#wait-prompts");
 let timer = document.querySelector("#time-left");
-let countDownIndicator = document.querySelector("#timer");
 let timerPrompt = document.querySelector("#timerprompt");
 let answers = document.querySelector("#MC-answers");
 let userGuess = document.querySelectorAll(".answer");
-// Answers Class = .answer - add to each list items code tag (querySelectorAll("code"));
 let pass = document.querySelector("#pass");
+// Results Section
 let judgement = document.querySelector("#results-judge");
 let beginGameButton = document.querySelector("#results-header");
 let correctAnswersTotal = document.querySelector("#AO-current-correct");
 let incorrectAnswersTotal = document.querySelector("#AO-current-incorrect");
 let initialsSaved = document.querySelector("#initials");
 let enteredInitials = document.querySelector("#enteredInitials");
-let scoreHistory = document.querySelector("#score-history-wrapper");
-// Score History has four items that are added.
 let highestScore = document.querySelector("#highest-score");
 let nextHighestScore = document.querySelector("#second-highest");
 let currentScore = document.querySelector("#saved-current-score");
 let saveInitials = document.querySelector("#save-initials");
-// There's a datetimeattribute that can be set to the time of submission as well when the time is submitted.
 let clearHistory = document.querySelector("#clear-history");
 let cancelGame = document.querySelector("#cancelGame");
 let outcome = document.querySelector("#answers-outcome");
@@ -78,6 +75,7 @@ const createRandomQuestions = () => {
     return randomisedArray;
 };
 
+// Default Variables
 let initialsEntered = "";
 let questionsCorrect = 0;
 let questionsIncorrect = 0;
@@ -94,6 +92,7 @@ let skipped = true;
 let questionsSet = createRandomQuestions(); 
 let setQuestion = "";
 
+// Set local storage with results and print to screen
 const saveScore = () => {
     initialsEntered = enteredInitials.textContent;
     initialsSaved.setAttribute("readonly", "");
@@ -148,10 +147,12 @@ const saveScore = () => {
     initialsSaved.value = "";
 }
 
+// Print initials input 
 const updateInitials = (event) => {
     enteredInitials.textContent = event.target.value;
 }
 
+// Display current results and judge player >:)
 const tallyResults = () => {
     correctAnswersTotal.innerHTML = questionsCorrect;
     incorrectAnswersTotal.innerHTML = questionsIncorrect;
@@ -168,6 +169,7 @@ const tallyResults = () => {
     }
 }
 
+// Change to game screen, set defaults, and remove answers.
 const moveToGame = () => {
     multiChoice.style.display = "flex";
     resultsScreen.style.display = "none";
@@ -186,7 +188,7 @@ const moveToGame = () => {
     initialsSaved.removeAttribute("readonly", "");
 }
 
-// Activated by clicking "Begin QuizTime". Begins game.
+// Set game start defaults and begin timer
 const startGame = () => {
     startTimer();
     question.disabled = true;
@@ -197,6 +199,7 @@ const startGame = () => {
     questionsIncorrect = 0;
 }
 
+// Set end of game defaults and print results. Call tally.
 const endGame = () => {
     multiChoice.style.display = "none";
     resultsScreen.style.display = "grid";
@@ -217,44 +220,58 @@ const endGame = () => {
     question.innerHTML = "Click here to start";
 }
 
+// Helper to return text to default.
 const resetPrompt = () => {
     setTimeout(function () {
         timerPrompt.innerHTML = "Countdown: ";
     }, 1000)
 }
 
+// Timer function for game.
 const startTimer = () => {
     
     
-
+    // Add a new question
     const addNewQuestion = () => {
         setQuestion = questionsSet.pop(); 
     } 
+    // Print question to screen
     setQAndA(setQuestion); 
     
+    // Function for recursion of questions.
     const timeInterStarter = () => {
+        // Call next question
         addNewQuestion();
+        // Print again to screen
         setQAndA(setQuestion); 
 
+        // Timer interval for game
         let timeInterval = setInterval(function () { 
             
+            // If skipped set defaults for non play
             if (skipped === true) {
+                // Stop current interval for next question
                 clearInterval(timeInterval);
 
+                // reset defaults for next question
                 timeToGuess = 15;
                 correctGuess = false;
                 passed = false;
+
+            // if true has been clicked, increase correct answers.
             } else if (correctGuess === true) {
                 questionsCorrect++;
                 
                 correctGuess = false;
                 clearInterval(timeInterval);
                 setTimeout(function () {
+                    // If round has ended - run end of game function
                     if (questionsSet.length === 0) {
                         timerPrompt.innerHTML = "Round over!";
                         setTimeout(function () {
                             endGame();
                         }, 2000);
+                    // If question is correct or incorrect and there are more questions, run next question.
                     } else if (questionsSet.length > 0) {
                         timerPrompt.innerHTML = "Get Ready.";
                         setTimeout(function () {
@@ -265,6 +282,8 @@ const startTimer = () => {
                         }, 1000);
                     }
                 }, 2000);
+
+            // If question is passed, increase incorrect answers.
             } else if (passed === true) {
                 questionsIncorrect++;
                 
@@ -273,7 +292,7 @@ const startTimer = () => {
 
                 timerPrompt.innerHTML = "You passed.";
 
-                // cycles the menu, adds the score, etc.
+                // test for passed question - run next question
                 setTimeout(function () {
                     if (questionsSet.length === 0) {
                         timerPrompt.innerHTML = "Round over!";
@@ -289,6 +308,8 @@ const startTimer = () => {
                         }, 1000);
                     }
                 }, 2000);
+            
+            // If timer runs out. Check criteria.
             } else if (timeToGuess <= 0) {
                 clearInterval(timeInterval);
                 
@@ -311,21 +332,25 @@ const startTimer = () => {
                         }, 1000);
                     }
                 }, 2000);
+
+            // Continue running timer if no user input is found.
             } else {
                 timer.innerHTML = timeToGuess; // Set inner HTML to time reamining
                 timeToGuess--; // Naturally reduce time remaining by 1
             }
         }, 1000); 
     }
+    // Call initial function.
     timeInterStarter();
 
 
 }
 
+// Setup question randimisation and print to screen. set attributes for testing.
 const setQAndA = (questions) => {
     let newQuestions = questions;
-    let currentQuestion = newQuestions.question; // prints the current question
-    question.innerHTML = `Question: ${currentQuestion}`; // Sets current question
+    let currentQuestion = newQuestions.question; 
+    question.innerHTML = `Question: ${currentQuestion}`; 
     currentAnswers = Object.entries(newQuestions).slice(1, 5);
 
     userGuess[0].setAttribute("data-true", "false");
@@ -370,9 +395,15 @@ const setQAndA = (questions) => {
 }
 
 // Event Listeners
+
+// Move user to game
 introScreen.addEventListener("click", moveToGame);
 beginGameButton.addEventListener("click", moveToGame);
+
+// Set defaults and start game on click.
 question.addEventListener("click", startGame);
+
+// Add function to pass on question
 pass.addEventListener("click", function () {
     if (clickTimeout === 0) {
         clickTimeout = 2;
@@ -388,15 +419,18 @@ pass.addEventListener("click", function () {
     }
 })
 
+// Check user guess and add feedback and control click pacing. 
 answers.addEventListener("click", function (event) {
     
     if (clickTimeout === 0) {
         
+        // Slow click pacing.
         clickTimeout = 2;
         setTimeout(function () {
             clickTimeout = 0;
         }, 2000);
 
+        // User guesses correct answer, request new question from timer function.
         if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
             event.target.closest('li').setAttribute("data-background", "correctGreen");
             setTimeout(function() {
@@ -404,7 +438,8 @@ answers.addEventListener("click", function (event) {
             }, 2000);
             timerPrompt.innerHTML = "Correct!";
             correctGuess = true;
-    
+        
+        // User guesses inforrect answer - 2 seconds. 
         } else if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "false") {
             event.target.closest('li').setAttribute("data-background", "inCorrectGreen");
             setTimeout(function() {
@@ -414,6 +449,7 @@ answers.addEventListener("click", function (event) {
             resetPrompt();
             timeToGuess-=2;
         } 
+    // for click pacing.
     } else {
         wait.innerHTML = "Please pace your clicks.";
         setTimeout(function () {
@@ -422,6 +458,7 @@ answers.addEventListener("click", function (event) {
     }
 });
 
+// Event listener to clear local storage. Specific to leave current storage as is.
 clearHistory.addEventListener("click", function () {
     window.localStorage.removeItem('highScore');
     window.localStorage.removeItem('nextHighest');
@@ -440,7 +477,10 @@ clearHistory.addEventListener("click", function () {
     highestScore.childNodes[5].childNodes[1].innerHTML = "";
 })
 
+// Input into textarea displays initials as they will be entered.
 initialsSaved.addEventListener("input", updateInitials);
+
+// If initials are entered. They are saved to storage
 saveInitials.addEventListener("click", function () {
     if (initialsSaved.value) {
         saveScore();
@@ -452,6 +492,7 @@ saveInitials.addEventListener("click", function () {
     }
 });
 
+// Function for user to stop game if desired or frustrated.
 cancelGame.addEventListener("click", function () {
     questionsCorrect = 0;
     questionsIncorrect = 0;

@@ -100,6 +100,7 @@
     width: 100%;
 }
 
+/* Animation Keyframes */
 @keyframes tick {
     0% {
         box-shadow: 0 0 0 none;
@@ -125,4 +126,23 @@
     100% {
         font-size: 1.2rem;
     }
+}
+
+/* Responsive styling for mobile */
+@media (max-width: 650px) {
+
+    .MC-inner-container {
+        width: 100%;
+    }
+    #timer {
+        padding: 0.3rem 1rem;
+    }
+    #MC-header-tooltip {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    #MC-header-tooltip, #pass {
+        padding: 0;
+    }
+
 }

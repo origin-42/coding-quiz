@@ -96,3 +96,8 @@ textarea {
 #clear-history:hover {
     text-shadow: 0 0 5px black;
 }
+
+/* Responsive styling for mobile */
+@media (max-width: 650px) {
+    
+}

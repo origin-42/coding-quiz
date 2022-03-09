@@ -24,6 +24,8 @@
     font-size: 1.2rem;
 }
 
+/* Animation Keyframe */
+
 @keyframes bob {
     0% {
         font-size: 1.5rem;
@@ -32,6 +34,8 @@
         font-size: 1.7rem;
     }
 }
+
+/* Responsive styling for mobile */
 
 @media (max-width: 500px) {
     #intro-container * {

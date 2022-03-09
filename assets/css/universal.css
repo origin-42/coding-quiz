@@ -17,6 +17,7 @@
 
 }
 
+
 .x1-5 {
     font-size: 1.5rem;
 }
@@ -30,6 +31,7 @@
     font-size: 3rem;
 }
 
+ 
 .timeout {
     color: var(--dark-brown);
 }
