@@ -89,6 +89,12 @@
 [data-background="inCorrectGreen"] {
     background-color: red;
 }
+#cancelGame {
+    cursor: pointer;
+    color: red;
+    padding-top: 10px;
+    background: var(--gray-page-gradient);
+}
 
 .answer {
     width: 100%;

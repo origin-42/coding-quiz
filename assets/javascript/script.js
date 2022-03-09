@@ -24,10 +24,10 @@ let highestScore = document.querySelector("#highest-score");
 let nextHighestScore = document.querySelector("#second-highest");
 let currentScore = document.querySelector("#saved-current-score");
 let saveInitials = document.querySelector("#save-initials");
-let initialsValue = document.querySelector("#initialsValue");
 // There's a datetimeattribute that can be set to the time of submission as well when the time is submitted.
 let clearHistory = document.querySelector("#clear-history");
-console.log(highestScore.childNodes[1].textContent)
+let cancelGame = document.querySelector("#cancelGame");
+let outcome = document.querySelector("#answers-outcome");
 
 // Questions and Answers
 const qAndA = [
@@ -89,6 +89,7 @@ let timeToGuess = 15;
 let clickTimeout = 0;
 let correctGuess = false;
 let passed = false;
+let skipped = true;
 
 let questionsSet = createRandomQuestions(); 
 let setQuestion = "";
@@ -100,19 +101,18 @@ const saveScore = () => {
 
     highScore = JSON.parse(localStorage.getItem("highScore"));
     nextHighest = JSON.parse(localStorage.getItem("nextHighest"));
-    newestSave = { initials: initialsEntered, correct: questionsCorrect, incorrect: questionsIncorrect };
-    currentScore.childNodes[1].childNodes[1].innerHTML = newestSave.initials;
-    currentScore.childNodes[3].childNodes[1].innerHTML = newestSave.correct;
-    currentScore.childNodes[5].childNodes[1].innerHTML = newestSave.incorrect;
 
 
     if (highScore == null) {
+
         highScore = newestSave;
         localStorage.setItem("highScore", JSON.stringify(highScore));
         highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
         highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
         highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
+
     } else if (highScore.correct < newestSave.correct) {
+
         nextHighest = highScore;
         localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
         nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
@@ -124,15 +124,28 @@ const saveScore = () => {
         highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
         highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
         highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
+
+    } else if (highScore.correct >= newestSave.correct) {
+        highScore = JSON.parse(localStorage.getItem("highScore"));
+        highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
+        highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
+        highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
+
     } else if (nextHighest == null || nextHighest.correct < newestSave.correct) {
         nextHighest = newestSave;
         localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
         nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
         nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
         nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
-    } 
+    } else if (nextHighest.correct >= newestSave.correct) {
+        nextHighest = JSON.parse(localStorage.getItem("nextHighest"));
+        nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
+        nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
+        nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+    }
 
-    localStorage.setItem("newestSave", JSON.stringify(newestSave));
+    enteredInitials.textContent = "";
+    initialsSaved.value = "";
 }
 
 const updateInitials = (event) => {
@@ -143,7 +156,6 @@ const tallyResults = () => {
     correctAnswersTotal.innerHTML = questionsCorrect;
     incorrectAnswersTotal.innerHTML = questionsIncorrect;
     
-
 
     if (questionsCorrect < 3) {
         judgement.innerHTML = "Try again (:";
@@ -156,11 +168,11 @@ const tallyResults = () => {
     }
 }
 
-console.log(answers.childNodes)
 const moveToGame = () => {
     multiChoice.style.display = "flex";
     resultsScreen.style.display = "none";
     introScreen.style.display = "none";
+
 
     if (answers.childNodes[1].childNodes[0].textContent != undefined || answers.childNodes[1].childNodes[0].textContent != undefined  || answers.childNodes[1].childNodes[0].textContent != undefined  || answers.childNodes[1].childNodes[0].textContent != undefined ) {
         answers.childNodes[1].childNodes[0].textContent = "";
@@ -169,6 +181,7 @@ const moveToGame = () => {
         answers.childNodes[7].childNodes[0].textContent = "";
     }
 
+    initialsSaved.disabled = false;
     saveInitials.disabled = false;
     initialsSaved.removeAttribute("readonly", "");
 }
@@ -177,6 +190,7 @@ const moveToGame = () => {
 const startGame = () => {
     startTimer();
     question.disabled = true;
+    skipped = false;
     timerPrompt.innerHTML = "Countdown: ";
 
     questionsCorrect = 0;
@@ -186,14 +200,20 @@ const startGame = () => {
 const endGame = () => {
     multiChoice.style.display = "none";
     resultsScreen.style.display = "grid";
-    introScreen.style.display = "none";
+
+    newestSave = { initials: initialsEntered, correct: questionsCorrect, incorrect: questionsIncorrect };
+    
+    localStorage.setItem("newestSave", JSON.stringify(newestSave));
+    currentScore.childNodes[1].childNodes[1].innerHTML = newestSave.initials;
+    currentScore.childNodes[3].childNodes[1].innerHTML = newestSave.correct;
+    currentScore.childNodes[5].childNodes[1].innerHTML = newestSave.incorrect;
 
     tallyResults();
 
     questionsSet = createRandomQuestions(); 
     question.disabled = false;
     timerPrompt.textContent = "Ready: "; 
-    timer.innerHTML = timeToGuess;
+    timer.innerHTML = "";
     question.innerHTML = "Click here to start";
 }
 
@@ -218,8 +238,13 @@ const startTimer = () => {
 
         let timeInterval = setInterval(function () { 
             
-            
-            if (correctGuess === true) {
+            if (skipped === true) {
+                clearInterval(timeInterval);
+
+                timeToGuess = 15;
+                correctGuess = false;
+                passed = false;
+            } else if (correctGuess === true) {
                 questionsCorrect++;
                 
                 correctGuess = false;
@@ -373,22 +398,22 @@ answers.addEventListener("click", function (event) {
         }, 2000);
 
         if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "true") {
-            event.target.setAttribute("data-background", "correctGreen");
+            event.target.closest('li').setAttribute("data-background", "correctGreen");
             setTimeout(function() {
-                event.target.setAttribute("data-background", "opac");
+                event.target.closest('li').setAttribute("data-background", "opac");
             }, 2000);
             timerPrompt.innerHTML = "Correct!";
             correctGuess = true;
     
         } else if (event.target.closest('li').querySelector('code').getAttribute('data-true') === "false") {
-            event.target.setAttribute("data-background", "inCorrectGreen");
+            event.target.closest('li').setAttribute("data-background", "inCorrectGreen");
             setTimeout(function() {
-                event.target.setAttribute("data-background", "opac");
+                event.target.closest('li').setAttribute("data-background", "opac");
             }, 2000);
             timerPrompt.innerHTML = "Incorrect!";
             resetPrompt();
             timeToGuess-=2;
-        }
+        } 
     } else {
         wait.innerHTML = "Please pace your clicks.";
         setTimeout(function () {
@@ -416,5 +441,25 @@ clearHistory.addEventListener("click", function () {
 })
 
 initialsSaved.addEventListener("input", updateInitials);
-saveInitials.addEventListener("click", saveScore);
+saveInitials.addEventListener("click", function () {
+    if (initialsSaved.value) {
+        saveScore();
+    } else {
+        initialsSaved.setAttribute("placeholder", "Enter initials here");
+        setTimeout(function() {
+            initialsSaved.setAttribute("placeholder", "J.K ..");
+        }, 2000);
+    }
+});
 
+cancelGame.addEventListener("click", function () {
+    questionsCorrect = 0;
+    questionsIncorrect = 0;
+
+    endGame();
+    resetPrompt();
+
+    initialsSaved.disabled = true;
+    saveInitials.disabled = true;
+    skipped = true;
+})
