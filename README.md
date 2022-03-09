@@ -1,4 +1,4 @@
-[![snippet](./assets/images/Title.psd)
+![snippet](./assets/images/Title.png)
 
 
 Here is a (very) short, interactive quiz designed to test your Javascript knowledge.
@@ -24,4 +24,4 @@ git pull
 
 [Home Screen](https://origin-42.github.io/quiztimeout/) - QuizTimeout
 
-[![snippet](./assets/images/Home%20Screen.png)
+![snippet](./assets/images/Home%20Screen.png)
