@@ -1,4 +1,5 @@
-# Welcome to QuizTimeout!
+# ```diff ! Welcome to QuizTimeout!
+```
 
 Here is a (very) short, interactive quiz designed to test your Javascript knowledge.
 
