@@ -25,23 +25,23 @@
         <section id="multiple-choice-container">
             <article class="MC-inner-container">
                 <section id="MC-header">
-                    <button class="MC-question">Click here to start</button>
+                    <button role="multiple-choice-question" tabindex="1" class="MC-question">Click here to start</button>
                 </section>
                 <section id="MC-box-container">
                     <article id="MC-box">
                         <section id="MC-header-tooltip">
                             <h4 id="wait-prompts">Select an answer or pass</h4>
-                            <h5 id="timer"><span id="timerprompt">Countdown:</span> <span id="time-left"></span></h5>
+                            <h5 id="timer"><span id="timerprompt">Countdown:</span> <span role="timer" id="time-left"></span></h5>
                         </section>
                         <ol id="MC-answers">
-                            <li><code data-background="opac" class="answer"></code></li>
-                            <li><code data-background="opac" class="answer"></code></li>
-                            <li><code data-background="opac" class="answer"></code></li>
-                            <li><code data-background="opac" class="answer"></code></li>
+                            <li role="multiple-choice-answer" tabindex="2"><code data-background="opac" class="answer"></code></li>
+                            <li role="multiple-choice-answer" tabindex="3"><code data-background="opac" class="answer"></code></li>
+                            <li role="multiple-choice-answer" tabindex="4"><code data-background="opac" class="answer"></code></li>
+                            <li role="multiple-choice-answer" tabindex="5"><code data-background="opac" class="answer"></code></li>
                         </ol>
                     </article>
-                    <button id="pass">Pass</button>
-                    <button id="cancelGame">Cancel Game</button>
+                    <button role="pass-on-answer" id="pass">Pass</button>
+                    <button role="stop-game" id="cancelGame">Cancel Game</button>
                 </section>
             </article>
         </section>
