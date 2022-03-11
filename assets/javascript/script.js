@@ -79,8 +79,20 @@ const createRandomQuestions = () => {
 let initialsEntered = "";
 let questionsCorrect = 0;
 let questionsIncorrect = 0;
-let highScore;
-let nextHighest;
+
+let highScore = JSON.parse(localStorage.getItem("highScore"));
+if (highScore != null) {
+    highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
+    highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
+    highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
+}
+
+let nextHighest = JSON.parse(localStorage.getItem("nextHighest"));
+if (nextHighest != null) {
+    nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
+    nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
+    nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+}
 let newestSave;
 
 let timeToGuess = 15; 
@@ -97,11 +109,7 @@ const saveScore = () => {
     initialsEntered = enteredInitials.textContent;
     initialsSaved.setAttribute("readonly", "");
     saveInitials.disabled = true;
-
-    highScore = JSON.parse(localStorage.getItem("highScore"));
-    nextHighest = JSON.parse(localStorage.getItem("nextHighest"));
-
-
+    
     if (highScore == null) {
 
         highScore = newestSave;
@@ -112,36 +120,30 @@ const saveScore = () => {
 
     } else if (highScore.correct < newestSave.correct) {
 
-        nextHighest = highScore;
-        localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
-        nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
-        nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
-        nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
-
         highScore = newestSave;
+        nextHighest = JSON.parse(localStorage.getItem("highScore"));
+        nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
+        nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
+        nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+        highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
+        highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
+        highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
+
         localStorage.setItem("highScore", JSON.stringify(highScore));
-        highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
-        highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
-        highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
-
-    } else if (highScore.correct >= newestSave.correct) {
-        highScore = JSON.parse(localStorage.getItem("highScore"));
-        highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
-        highestScore.childNodes[3].childNodes[1].innerHTML = highScore.correct;
-        highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
-
-    } else if (nextHighest == null || nextHighest.correct < newestSave.correct) {
-        nextHighest = newestSave;
         localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
-        nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
-        nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
-        nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
-    } else if (nextHighest.correct >= newestSave.correct) {
-        nextHighest = JSON.parse(localStorage.getItem("nextHighest"));
-        nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
-        nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
-        nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
-    }
+    } 
+    
+    if (nextHighest == null) {
+        
+        if (highScore.correct > newestSave.correct) {
+            nextHighest = newestSave;
+            localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
+            nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
+            nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
+            nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+        }
+
+    } 
 
     enteredInitials.textContent = "";
     initialsSaved.value = "";
