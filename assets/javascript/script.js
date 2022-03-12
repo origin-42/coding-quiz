@@ -106,12 +106,12 @@ let setQuestion = "";
 
 // Set local storage with results and print to screen
 const saveScore = () => {
-    initialsEntered = enteredInitials.textContent;
+    
     initialsSaved.setAttribute("readonly", "");
     saveInitials.disabled = true;
     
     if (highScore == null) {
-
+        
         highScore = newestSave;
         localStorage.setItem("highScore", JSON.stringify(highScore));
         highestScore.childNodes[1].childNodes[1].innerHTML = highScore.initials;
@@ -119,7 +119,7 @@ const saveScore = () => {
         highestScore.childNodes[5].childNodes[1].innerHTML = highScore.incorrect;
 
     } else if (highScore.correct < newestSave.correct) {
-
+        
         highScore = newestSave;
         nextHighest = JSON.parse(localStorage.getItem("highScore"));
         nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
@@ -136,14 +136,28 @@ const saveScore = () => {
     if (nextHighest == null) {
         
         if (highScore.correct > newestSave.correct) {
+           
             nextHighest = newestSave;
             localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
             nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
             nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
             nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+
         }
 
-    } 
+    } else if (nextHighest != null) {
+
+        if (highScore.correct > newestSave.correct && nextHighest.correct < newestSave.correct) {
+            
+            nextHighest = newestSave;
+            localStorage.setItem("nextHighest", JSON.stringify(nextHighest));
+            nextHighestScore.childNodes[1].childNodes[1].innerHTML = nextHighest.initials;
+            nextHighestScore.childNodes[3].childNodes[1].innerHTML = nextHighest.correct;
+            nextHighestScore.childNodes[5].childNodes[1].innerHTML = nextHighest.incorrect;
+
+        }
+
+    }
 
     enteredInitials.textContent = "";
     initialsSaved.value = "";
@@ -205,13 +219,6 @@ const startGame = () => {
 const endGame = () => {
     multiChoice.style.display = "none";
     resultsScreen.style.display = "grid";
-
-    newestSave = { initials: initialsEntered, correct: questionsCorrect, incorrect: questionsIncorrect };
-    
-    localStorage.setItem("newestSave", JSON.stringify(newestSave));
-    currentScore.childNodes[1].childNodes[1].innerHTML = newestSave.initials;
-    currentScore.childNodes[3].childNodes[1].innerHTML = newestSave.correct;
-    currentScore.childNodes[5].childNodes[1].innerHTML = newestSave.incorrect;
 
     tallyResults();
 
@@ -345,7 +352,6 @@ const startTimer = () => {
     // Call initial function.
     timeInterStarter();
 
-
 }
 
 // Setup question randimisation and print to screen. set attributes for testing.
@@ -466,6 +472,9 @@ clearHistory.addEventListener("click", function () {
     window.localStorage.removeItem('nextHighest');
     window.localStorage.removeItem('newestSave');
 
+    highScore = null;
+    nextHighest = null;
+
     currentScore.childNodes[1].childNodes[1].innerHTML = "";
     currentScore.childNodes[3].childNodes[1].innerHTML = "";
     currentScore.childNodes[5].childNodes[1].innerHTML = "";
@@ -484,6 +493,17 @@ initialsSaved.addEventListener("input", updateInitials);
 
 // If initials are entered. They are saved to storage
 saveInitials.addEventListener("click", function () {
+    
+    // Create newestSave data
+    initialsEntered = enteredInitials.textContent;
+    newestSave = { initials: initialsEntered, correct: questionsCorrect, incorrect: questionsIncorrect };
+        
+    // Update localStorage
+    localStorage.setItem("newestSave", JSON.stringify(newestSave));
+    currentScore.childNodes[1].childNodes[1].innerHTML = newestSave.initials;
+    currentScore.childNodes[3].childNodes[1].innerHTML = newestSave.correct;
+    currentScore.childNodes[5].childNodes[1].innerHTML = newestSave.incorrect;
+
     if (initialsSaved.value) {
         saveScore();
     } else {

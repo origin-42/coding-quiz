@@ -98,6 +98,22 @@ textarea {
 }
 
 /* Responsive styling for mobile */
-@media (max-width: 650px) {
-    
+@media (max-width: 1100px) {
+    #results-container #results-containers {
+        justify-content: center;
+        gap: 0;
+    }
+    #RC-left, #RC-right {
+        min-width: 100px;
+    }
+    #results-container {
+        grid-template-rows: inherit;
+        height: inherit;
+    }
+    #results-container #results-containers {
+        padding: 0;
+    }
+    #results-container #results-header {
+        display: flex;
+    }
 }

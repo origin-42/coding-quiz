@@ -133,16 +133,23 @@
 
     .MC-inner-container {
         width: 100%;
+        font-size: inherit;
     }
     #timer {
         padding: 0.3rem 1rem;
     }
     #MC-header-tooltip {
-        justify-content: center;
+        justify-content: space-around;
         flex-wrap: wrap;
     }
     #MC-header-tooltip, #pass {
         padding: 0;
+    }
+    #MC-answers {
+        padding: 2px 30px;
+    }
+    #multiple-choice-container {
+        align-items: flex-start;
     }
 
 }
